@@ -1,42 +1,87 @@
-include <Python.h>
-#include <object.h>
-#include <listobject.h>
+#include <Python.h>
+#include <stdio.h>
 /**
  *
- *  * print_python_list_info - Print list info about Python
+ *  * print_item_info - Display the information of items of a python list
  *
  *   *
  *
- *    * @p: Pyobjext pointer
+ *    * @prmItem: item of a python object
  *
- *     *
+ *     * @prmItemIndex: item index
  *
- *      * Return: void
+ *      */
+
+void print_item_info(PyObject *prmItem, int prmItemIndex)
+
+{
+
+		char *itemName;
+
+
+
+			itemName = (char *)Py_TYPE(prmItem)->tp_name;
+
+
+
+				printf("Element %d: %s\n", prmItemIndex, itemName);
+
+}	
+
+
+
+/**
  *
- *       */
+ *  * print_python_list_info - display all item informations from one python
+ *
+ *   *                          object
+ *
+ *    *
+ *
+ *     * @p: Python object
+ *
+ *      */
 
 void print_python_list_info(PyObject *p)
+
 {
-		Py_ssize_t count;
 
-			Py_ssize_t length = PyList_Size(p);
+		int itemIndex, objAllocatedNb = 0;
 
-				PyListObject *pObj = (PyListObject *)p;
+			PyObject *item;
 
-
-
-					printf("[*] Size of the Python List = %li\n", length);
-
-						printf("[*] Allocated = %ld\n", pObj->allocated);
+				Py_ssize_t objListSize = 0;
 
 
 
-							for (count = 0; count < length; count++)
+					/* Check if item list is not empty */
 
-									{
+					if (PyList_Check(p))
 
-												printf("Element %ld: %s\n", count, Py_TYPE(pObj->ob_item[count])->tp_name);
+							{
 
-													}
+										objListSize = PyList_Size(p);
+
+												objAllocatedNb = ((PyListObject *)p)->allocated;
+
+
+
+														printf("[*] Size of the Python List = %d\n", (int) objListSize);
+
+																printf("[*] Allocated = %d\n", objAllocatedNb);
+
+
+
+																		for (itemIndex = 0; itemIndex < objListSize; itemIndex++)
+
+																					{
+
+																									item = PyList_GetItem(p, itemIndex);
+
+																												print_item_info(item, itemIndex);
+
+																														}
+
+																			}
 
 }
